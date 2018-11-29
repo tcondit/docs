@@ -1,30 +1,36 @@
 .footer {
   display: none;
+  margin: 0;
+  padding: 1rem 0;
 
   @include respond-to(desktop) {
     display: block;
   }
 
   .footline {
-    display: block;
+    display: flex;
+    flex-wrap: nowrap;
+    line-height: 2.2rem;
     padding-top: .2rem;
-    padding-left: 5rem;
+    padding-left: 4rem;
+    // sidebar + max-content-width
+    max-width: calc(1024px + 24rem);
 
     .tags {
-      display: inline-block;
-      float: left;
       font-size: 12px;
       margin-right: 10px;
-      @extend %extend_4;
+      order: 0;
+      flex: 0 0 auto;
     }
 
     .copyright {
-      @extend %extend_4;
+      flex: 0 1 auto;
     }
 
     .date {
       display: inline-block;
-      margin-left: 10px;
+      flex: 0 0 auto;
+      padding-left: 10px;
     }
   }
 }
