@@ -107,8 +107,18 @@
   </aside>
 
   <section class="page-content">
-      <div class="page-content__slack">
-        <script async defer src="https://slack.cloudposse.com/slackin.js"></script>
+      <div class="page-content__preheader">
+        {{if .Params.tags }}
+        <div class="tags page-content__tags">
+          {{ range $index, $tag := .Params.tags }}
+            <a class="label label-default" href="{{$.Site.BaseURL}}tags/{{ $tag | urlize }}">{{ $tag }}</a>
+          {{ end }}
+        </div>
+        {{end}}
+
+        <div class="page-content__slack">
+          <script async defer src="https://slack.cloudposse.com/slackin.js"></script>
+        </div>
       </div>
       <div class="page-content__header">
         <div class="page-content__title-wrapper">
