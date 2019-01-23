@@ -9,7 +9,6 @@ description: "Tmate is a way to share a console window or set of console windows
 ### Install tmate
 
 ```
-brew tap nviennot/tmate
 brew install tmate
 ```
 
