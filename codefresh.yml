@@ -1,8 +1,22 @@
 # Build a service with environment variables
 version: '1.0'
 
+stages:
+  - Build
+  - Test
+  - Deploy
 steps:
+  main_clone:
+    stage: Build
+    title: "Clone repository"
+    type: git-clone
+    description: "Initialize"
+    repo: ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}
+    git: CF-default
+    revision: ${{CF_REVISION}}
+
   init_variables:
+    stage: Build
     title: Initializing variables...
     image: alpine
     commands:
@@ -11,18 +25,23 @@ steps:
       - cf_export HUGO_CONFIG=deploy.toml
       - cf_export HTMLTEST_CONFIG=.htmltest.codefresh.yml
       - cf_export TMPDIR=/codefresh/volume
+      - cf_export YARN_BUILD_DISABLED=false
+      - cf_export COMPONENTS_BUILD=true
 
   semver:
+    stage: Build
     title: Export semantic version
     image: cloudposse/build-harness:${{BUILD_HARNESS_VERSION}}
     working_directory: ./
     commands:
+      - set +e -x
       - make git/show
       - make git/export | tee -a ${{CF_VOLUME_PATH}}/env_vars_to_export
       - make semver/show
       - make semver/export | tee -a ${{CF_VOLUME_PATH}}/env_vars_to_export
 
   build_image:
+    stage: Build
     title: Build image
     type: build
     description: Build docs-toolbox image
@@ -30,15 +49,18 @@ steps:
     dockerfile: Dockerfile
 
   build:
+    stage: Build
     title: Building Hugo static site...
     image: '${{build_image}}'
     working_directory: ./
     commands:
+      - set +e -x
       - make lint
       - make release
-      - make hugo/build
+      - make real-clean hugo/build
 
   build_versioned_release:
+    stage: Build
     title: Building Hugo static site versioned release...
     image: '${{build_image}}'
     working_directory: ./
@@ -46,30 +68,35 @@ steps:
       - "HUGO_URL=${{HUGO_URL}}release/${{SEMVERSION_TAG}}"
       - "HUGO_PUBLISH_DIR=public/release/${{SEMVERSION_TAG}}"
     commands:
+      - set +e -x
       - make lint
       - make release
-      - make hugo/build
+      - make real-clean hugo/build
     when:
       condition:
         all:
           executeForTag: "'${{SEMVERSION_TAG}}' != ''"
 
   test:
+    stage: Test
     title: Running tests...
     image: '${{build_image}}'
     working_directory: ./
     environment:
       - "HUGO_EDIT_BRANCH=${{CF_BRANCH}}"
     commands:
+      - set +e -x
       - make lint
-      - make smoketest
+      - make real-clean smoketest
 
   # Only deploy on tagged releases
   deploy:
+    stage: Deploy
     title: Pushing all artifacts to S3 bucket...
     image: cloudposse/build-harness:${{BUILD_HARNESS_VERSION}}
     working_directory: ./
     commands:
+      - set +e -x
       - make deploy
     when:
       condition:
@@ -78,10 +105,12 @@ steps:
 
   # Only reindex on tagged releases
   reindex:
+    stage: Deploy
     title: Updating algolia search index...
     image: '${{build_image}}'
     working_directory: ./
     commands:
+      - set +e -x
       - make reindex
     when:
       condition:
@@ -90,10 +119,12 @@ steps:
 
   # Only invalidate cache on tagged releases
   invalidate_cache:
+    stage: Deploy
     title: Invalidating CloudFlare cache...
     image: '${{build_image}}'
     working_directory: IMAGE_WORK_DIR
     commands:
+      - set +e -x
       - make invalidate-cache
     when:
       condition:

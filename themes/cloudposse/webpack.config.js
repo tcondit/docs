@@ -1,8 +1,6 @@
 const path = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const webpack = require('webpack');
-const env = process.env.NODE_ENV
+const env = process.env.NODE_ENV;
 
 var config = {
   entry: {
@@ -32,9 +30,6 @@ var config = {
     }),
     // new BundleAnalyzerPlugin() // Disabled by default.
   ],
-  optimization: {
-    minimizer: [new UglifyJsPlugin()]
-  },
 };
 
 

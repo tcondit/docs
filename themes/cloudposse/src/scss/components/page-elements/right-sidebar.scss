@@ -11,6 +11,7 @@
 
   @include respond-to('large') {
     display: block;
+    flex: 1 0 300px;
   }
 
   &__title {
@@ -42,6 +43,12 @@
         color: $color_fuscous_gray_approx; //Instead of the line below you could use @include border-radius($radius, $vertical-radius)
         border-radius: 3px;
         text-decoration: none;
+      }
+
+      &.active {
+        color: white;
+        background-color: #364548;
+        border-radius: 3px;
       }
     }
 

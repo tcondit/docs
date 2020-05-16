@@ -1,8 +1,8 @@
 .page-content {
-  max-width: 1024px;
   scroll-behavior: smooth;
   overflow-y: auto;
   padding: 10px;
+  position: relative;
   flex: 1;
 
   @supports (-webkit-overflow-scrolling: touch) {
@@ -11,13 +11,24 @@
   }
 
   @include respond-to('desktop') {
-    padding: 2rem 4rem;
+    padding: 0;
+  }
+
+  &__preheader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-bottom: .5rem;
   }
 
   &__slack {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 1rem;
+    margin-left: 10px;
+  }
+
+  &__scroller {
+    @include respond-to('desktop') {
+      padding: 2rem 4rem;
+    }
   }
 
   &__header {
@@ -30,7 +41,7 @@
   }
 
   &__title {
-    font-family: $font_0, $font_1, sans-serif;
+    font-family: $font_0, $font_1, $font_2, sans-serif;
     text-align: left;
     font-weight: 300;
     font-size: 30px;
@@ -125,6 +136,7 @@
     @include respond-to('desktop') {
       display: flex;
       flex-direction: column;
+      flex-grow: 1;
     }
   }
 
@@ -145,7 +157,7 @@
     }
 
     tr {
-      background-color: #fff;
+      background-color: $white;
     }
 
     tr:nth-child(2n) {
@@ -155,6 +167,11 @@
     code {
       word-break: inherit;
     }
+  }
+
+  &__link,
+  a {
+    color: $color_deep_blue_sky;
   }
 
   img {

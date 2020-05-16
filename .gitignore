@@ -1,3 +1,5 @@
+.DS_Store
+.envrc
 .env
 deploy.toml
 test
@@ -15,7 +17,7 @@ tmp/*
 *.iml
 package-lock.json
 static/components/*
-utterances/*
+static/styleguide/*
 
 themes/cloudposse/static/css/*
 themes/cloudposse/static/js/*
